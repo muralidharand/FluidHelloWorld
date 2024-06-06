@@ -64,8 +64,10 @@ template.innerHTML = `
     .wrapper { text-align: center }
     .dice { font-size: 200px }
     .roll { font-size: 50px;}
+	.browser { font-size: 20px }
   </style>
   <div class="wrapper">
+	<div class="browser"></div>
     <div class="dice"></div>
     <button class="roll"> Roll </button>
   </div>
@@ -77,11 +79,13 @@ const renderDiceRoller = (dice, elem) => {
 	const rollButton = elem.querySelector(".roll");
 	const diceElem = elem.querySelector(".dice");
 
+	
+
 	// Set the value at our dataKey with a random number between 1 and 6.
 	rollButton.onclick = () => {
 		dice.value = Math.floor(Math.random() * 6) + 1;
 	};
-
+	
 	// Get the current value of the shared data to update the view whenever it changes.
 	const updateDice = () => {
 		const diceValue = dice.value;
@@ -90,7 +94,39 @@ const renderDiceRoller = (dice, elem) => {
 		diceElem.style.color = `hsl(${diceValue * 60}, 70%, 30%)`;
 	};
 	updateDice();
+	const getBrowserVersion= () =>
+	{
+		const browserElement = elem.querySelector(".browser");
+		var userAgent = navigator.userAgent;
+		var browserName;
 
+		// Check for Chrome
+		if (userAgent.indexOf("Chrome") > -1) {
+			browserName = "Chrome";
+		}
+
+		// Check for Firefox
+		else if (userAgent.indexOf("Firefox") > -1) {
+			browserName = "Firefox";
+		}
+
+		// Check for Safari
+		else if (userAgent.indexOf("Safari") > -1) {
+			browserName = "Safari";
+		}
+
+		// Check for Edge
+		else if (userAgent.indexOf("Edge") > -1) {
+			browserName = "Edge";
+		}
+
+		// Check for Internet Explorer
+		else if (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1) {
+			browserName = "Internet Explorer";
+		}
+		browserElement.innerHTML ="I'm " + browserName;
+	}
+	getBrowserVersion();
 	// Use the changed event to trigger the rerender whenever the value changes.
 	Tree.on(dice, "treeChanged", updateDice);
 	// Setting "fluidStarted" is just for our test automation
