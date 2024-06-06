@@ -19,6 +19,7 @@ const sf = new SchemaFactory("fluidHelloWorldSample");
 // Here we define an object we'll use in the schema, a Dice.
 class Dice extends sf.object("Dice", {
 	value: sf.number,
+	textValue: sf.string
 }) {}
 
 // Here we define the tree schema, which has a single Dice object starting at 1.
@@ -28,6 +29,7 @@ const treeConfiguration = new TreeConfiguration(
 	() =>
 		new Dice({
 			value: 1,
+			textValue:"Murali",
 		}),
 );
 
@@ -65,11 +67,16 @@ template.innerHTML = `
     .dice { font-size: 200px }
     .roll { font-size: 50px;}
 	.browser { font-size: 20px }
+	.textEdit { font-size: 15px }
+
   </style>
   <div class="wrapper">
 	<div class="browser"></div>
     <div class="dice"></div>
     <button class="roll"> Roll </button>
+	<div class="textEdit1"> 
+		<textarea class="textEdit"> </textarea>
+	</div>
   </div>
 `;
 
@@ -78,18 +85,27 @@ const renderDiceRoller = (dice, elem) => {
 
 	const rollButton = elem.querySelector(".roll");
 	const diceElem = elem.querySelector(".dice");
+	const textElem = elem.querySelector(".textEdit");
 
-	
+	textElem.addEventListener('input', () => {
+		var textLn =  textElem.value.length;
+		if(textLn >= 100) {
+			textElem.style.fontSize = '10pt';
+		}
+		rollButton.click();
+	})
 
 	// Set the value at our dataKey with a random number between 1 and 6.
 	rollButton.onclick = () => {
-		dice.value = Math.floor(Math.random() * 6) + 1;
+		//dice.value = Math.floor(Math.random() * 6) + 1;
+		dice.textValue=textElem.value;
 	};
 	
 	// Get the current value of the shared data to update the view whenever it changes.
 	const updateDice = () => {
 		const diceValue = dice.value;
 		// Unicode 0x2680-0x2685 are the sides of a dice (⚀⚁⚂⚃⚄⚅)
+		textElem.innerHTML =  dice.textValue;
 		diceElem.textContent = String.fromCodePoint(0x267f + diceValue);
 		diceElem.style.color = `hsl(${diceValue * 60}, 70%, 30%)`;
 	};
@@ -124,7 +140,7 @@ const renderDiceRoller = (dice, elem) => {
 		else if (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1) {
 			browserName = "Internet Explorer";
 		}
-		browserElement.innerHTML ="I'm " + browserName;
+		browserElement.innerHTML ="I'm running in " + browserName;
 	}
 	getBrowserVersion();
 	// Use the changed event to trigger the rerender whenever the value changes.
